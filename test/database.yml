@@ -1,0 +1,21 @@
+sqlite:
+  :adapter: sqlite
+  :database: vendor/plugins/escargot/test/escargot_plugins.sqlite.db
+
+sqlite3:
+  :adapter: sqlite3
+  :database: vendor/plugins/escargot/test/escargot_plugins.sqlite3.db
+
+postgresql:
+  :adapter: postgresql
+  :username: postgres
+  :password: postgres
+  :database: escargot
+  :min_messages: ERROR
+
+mysql:
+  :adapter: mysql
+  :host: localhost
+  :username: root
+  :password: password
+  :database: escargot
