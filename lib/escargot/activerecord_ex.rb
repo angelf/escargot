@@ -9,6 +9,7 @@ module Escargot
 
     module ClassMethods
       attr_accessor :index_name
+      attr_accessor :update_index_policy
 
       # defines an elastic search index. Valid options:
       #
@@ -41,6 +42,7 @@ module Escargot
         send :include, InstanceMethods
         @index_name = options[:index_name] || self.table_name.underscore
         @update_index_policy = options.include?(:updates) ? options[:updates] : :immediate
+        
         if @update_index_policy
           after_save :update_index
           after_destroy :delete_from_index
@@ -80,10 +82,11 @@ module Escargot
         $elastic_search_client.count(query, options.merge({:index => self.index_name, :type => elastic_search_type}))
       end
 
-      def facets(fields_list, options = {:query => "*"})
+      def facets(fields_list, options = {})
+        size = options.delete(:size) || 10
         fields_list = [fields_list] unless fields_list.kind_of?(Array)
         
-        if options[:query].empty?
+        if !options[:query]
           options[:query] = {:match_all => true}
         elsif options[:query].kind_of?(String)
           options[:query] = {:query_string => {:query => options[:query]}}
@@ -91,7 +94,7 @@ module Escargot
 
         options[:facets] = {}
         fields_list.each do |field|
-          options[:facets][field] = {:terms => {:field => field}}
+          options[:facets][field] = {:terms => {:field => field, :size => size}}
         end
 
         hits = $elastic_search_client.search(options)
@@ -111,15 +114,14 @@ module Escargot
       # available for search
       #
       # http://www.elasticsearch.com/docs/elasticsearch/rest_api/admin/indices/refresh/
-      def refresh_index
-        $elastic_search_client.refresh(index_name)
+      def refresh_index(index_version = nil)
+        $elastic_search_client.refresh(index_version || index_name)
       end
       
       # creates a new index version for this model and sets the mapping options for the type
       def create_index_version
         index_version = $elastic_search_client.create_index_version(@index_name, @index_options)
-        if @mapping 
-          puts @mapping.inspect
+        if @mapping
           $elastic_search_client.update_mapping(@mapping, :index => index_version, :type => elastic_search_type)
         end
         index_version
@@ -140,6 +142,12 @@ module Escargot
         end
       end
       
+      def delete_id_from_index(id, options = {})
+        options[:index] ||= self.index_name
+        options[:type]  ||= self.table_name.underscore.singularize
+        $elastic_search_client.delete(id.to_s, options)
+      end
+      
       def optimize_index
         $elastic_search_client.optimize(index_name)
       end
@@ -155,10 +163,9 @@ module Escargot
 
       # updates the index using the appropiate policy
       def update_index
-        puts "updating!"
-        if @update_index_policy == :immediate_with_refresh
+        if self.class.update_index_policy == :immediate_with_refresh
           local_index_in_elastic_search(:refresh => true)
-        elsif @update_index_policy == :enqueu
+        elsif self.class.update_index_policy == :enqueue
           Resque.enqueue(DistributedIndexing::ReIndexDocuments, self.class.to_s, [self.id])
         else
           local_index_in_elastic_search
@@ -167,13 +174,15 @@ module Escargot
 
       # deletes the document from the index using the appropiate policy ("simple" or "distributed")
       def delete_from_index
-        local_delete_from_index
-      end
-
-      def local_delete_from_index(options = {})
-        options[:index] ||= self.class.index_name
-        options[:type]  ||= self.class.table_name.underscore.singularize
-        $elastic_search_client.delete(self.id.to_s, options)
+        if self.class.update_index_policy == :immediate_with_refresh
+          self.class.delete_id_from_index(self.id, :refresh => true)
+          # As of Oct 25 2010, :refresh => true is not working
+          self.class.refresh_index()
+        elsif self.class.update_index_policy == :enqueue
+          Resque.enqueue(DistributedIndexing::ReIndexDocuments, self.class.to_s, [self.id])
+        else
+          self.class.delete_id_from_index(self.id)
+        end
       end
 
       def local_index_in_elastic_search(options = {})
@@ -185,6 +194,13 @@ module Escargot
           self.respond_to?(:indexed_json_document) ? self.indexed_json_document : self.to_json,
           options
         )
+        
+        ## !!!!! passing :refresh => true should make ES auto-refresh only the affected
+        ## shards but as of Oct 25 2010 with ES 0.12 && rubberband 0.0.2 that's not the case
+        if options[:refresh]
+          self.class.refresh_index(options[:index])
+        end
+          
       end
 
     end

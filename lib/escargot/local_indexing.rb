@@ -14,5 +14,6 @@ module Escargot
 
       $elastic_search_client.deploy_index_version(model.index_name, index_version)
     end
-  end  
+  end
+
 end

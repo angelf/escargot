@@ -16,6 +16,7 @@ module Escargot
     
     # "deploys" a new version as the current one
     def deploy_index_version(index, new_version)
+      $elastic_search_client.refresh(new_version)
       if current_version = current_index_version(index)
         $elastic_search_client.alias_index(
           :add => {new_version => index}, 

@@ -24,6 +24,23 @@ module Escargot
       end
     end
 
+    class ReIndexDocuments
+      @queue = :nrt
+      
+      def self.perform(model_name, ids)
+        model = model_name.constantize
+        ids_found = []
+        model.find(:all, :conditions => {:id => ids}).each do |record|
+          record.local_index_in_elastic_search
+          ids_found << record.id
+        end
+        
+        (ids - ids_found).each do |id|
+          model.delete_id_from_index(id)
+        end
+      end
+    end
+
     class DeployNewVersion
       @queue = :indexing
       def self.perform(index, index_version)
