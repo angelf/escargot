@@ -9,6 +9,10 @@ ENV['RAILS_ROOT'] ||= File.dirname(__FILE__) + '/../../../..'
 require 'test/unit'
 require File.expand_path(File.join(ENV['RAILS_ROOT'], 'config/environment.rb'))
 
+# we define globally the model here so that User.find() will find the class existing
+class User < ActiveRecord::Base
+end
+
 def load_schema
   config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
   ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")

@@ -14,19 +14,16 @@ class CustomIndexOptions < Test::Unit::TestCase
     )
   end
   
-  def test_asciifolding_option  
-    puts 'indexing'
-    
+  def test_asciifolding_option
     User.delete_all
     User.delete_index
     
-    User.new(:name => 'Pedrín el Joven').save!
-    User.new(:name => 'Pedro el Viejo').save!
-    User.new(:name => 'Roberto el Delgado').save!
-    User.new(:name => 'Jamie la Máquina Voladora').save!
+    User.create(:name => 'Pedrín el Joven')
+    User.create(:name => 'Pedro el Viejo')
+    User.create(:name => 'Roberto el Delgado')
+    User.create(:name => 'Jamie la Máquina Voladora')
 
     Escargot::LocalIndexing.create_index_for_model(User)
-    User.refresh_index
     
     results = User.search("pedrin")
     assert_equal results.total_entries, 1

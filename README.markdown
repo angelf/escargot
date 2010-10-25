@@ -7,42 +7,42 @@ distributed indexing and models that integrate data from many databases.
 
 Requirements
 ============
-Currently only rails 2.3 is supported. You will need ElasticSearch and, if you
-want to use the **optional** distributed indexing mode, Redis.
+Currently only rails 2.3 is supported. You will need ElasticSearch, the 'rubberband' gem
+and (if you want to use the **optional** distributed indexing mode) Redis. 
 
 Usage
 =======
 
 First, [download and start ElasticSearch](http://www.elasticsearch.com/docs/elasticsearch/setup/installation/) (it's really simple). With the default setup of
 of ElasticSearch (listening to localhost and port 9200) no configuration of the plugin is 
-necessary.
+necessary. 
 
-To define an index, simple add a line to your model
+To define an index, simply add a line to your model
 
     class Post < ActiveRecord::Base
       elastic_index
     end
 
-To create the index, just execute the rake task that rebuilds all indexes:
+To create the index, execute the rake task that rebuilds all indexes:
 
-    rake elasticsearch:index
+    rake escargot:index
 
-Or restrict it to just one index
+Or restrict it to just one model
     
-    rake "elasticsearch:index[Post]"
+    rake "escargot:index[Post]"
     
 And you are ready to search:
 
     Post.search "dreams OR nightmares" 
 
-Near real time support
+Near Real Time support
 =======
 
-By default, every time you save or delete a record in an indexed model, the index will be updated
-to reflect the changes. You can disable this by 
+The default behavior is that every time you save or delete a record in an indexed model
+the index will be updated to reflect the changes. You can disable this by 
 
     class Post < ActiveRecord::Base
-      elastic_index :update => false
+      elastic_index :updates => false
     end
 
 Please notice that when updates are enabled there may be a slight delay for the changes to appear
@@ -51,7 +51,7 @@ you absolutely need to ensure that the change is made public before returning co
  the `:immediate_with_refresh` option provides this assurance.
 
     class Post < ActiveRecord::Base
-      elastic_index :update => :immediate_with_refresh
+      elastic_index :updates => :immediate_with_refresh
     end
 
 Enabling `:immediate_with_refresh` is not recommended. A better option is to simply call `Post.refresh_index`
@@ -70,7 +70,7 @@ Luckily, ActiveRecord has excellent support for JSON serialization, so it's real
 to include associations or custom methods.
 
      class Post < ActiveRecord::Base
-      elastic_index :update => false
+      elastic_index :updates => false
       belongs_to :category
   
       def indexed_json_document 
@@ -81,6 +81,8 @@ to include associations or custom methods.
         title.downcase.gsub(" ", "-")
       end
      end
+
+See [ActiveRecord's JSON serialization documentation](http://api.rubyonrails.org/classes/ActiveModel/Serializers/JSON.html)
 
 Search features
 =======
@@ -101,7 +103,7 @@ You can use boolean operators, restrict your search to a field, etc.
 
 You can also guide the interpretation of the query, with the options `:default_operator` and `:df` (default_field). These two are equivalent:
 
-    results = Post.search "title:(dreams AND nightmares)" 
+    results = Post.search "title:(dreams AND nightmares)"
     results = Post.search "dreams nightmares" , :default_operator => 'AND', :df => 'title'
 
 Sorting by attributes
@@ -135,28 +137,28 @@ giving you access to the full range of search features.
 
     Bird.search(:match_all => true}  
       
-    Bird.search(:fuzzy => {:name => 'orial'})
+    Bird.search(:fuzzy => {:name => 'oriale'})
 
     Bird.search(:custom_score => {:query => {:match_all => true}, :script => "random()"})
     
     Bird.search(:dis_max => {
       :tie_breaker => 0.7,
       :boost => 1.2,
-      :queries => [:term => {:name => 'oriol'}, :term => {:content => 'oriol'}]
+      :queries => [:term => {:name => 'oriole'}, :term => {:content => 'oriole'}]
     })
 
     Bird.search(:more_like_this => {
-      :like_text => "oriol"
+      :like_text => "The orioles are a family of Old World passerine birds"
     })
 
  
     Bird.search(
       :filtered => {
         :query => {
-          :term => {:name => 'oriol'}
+          :term => {:name => 'oriole'}
         },
         :filter => {
-          :term => {:name => 'oriol'}
+          :term => {:suborder => 'Passeri'}
         }
       }
     )
@@ -164,11 +166,11 @@ giving you access to the full range of search features.
 Facets
 ----------------
   
-Partial results counts for each term in a field (facets) are available through the `facets` 
-class method.
+Term facets returning the most popular terms for a field and partial results counts are 
+available through the `facets` class method.
 
-    # list all author_ids and how many results 
     Post.facets :author_id
+    Post.facets :author_id, :size => 100
     
     # restrict the facets to posts that contain 'dream'
     Post.facets :author_id, :query => "dream"
@@ -249,8 +251,9 @@ Some examples:
     class Post < ActiveRecord::Base
       elastic_index :mapping_options => {
         :properties => {
-          :category => {:type => "string", :index => "not_analyzed"}
-          :title => {:type => "string", :index => "analyzed", :term_vector => true, :boost => 10.0}
+          :category => {:type => :string, :index => :not_analyzed}, 
+          :title => {:type => :string, :index => :analyzed, :term_vector => true, :boost => 10.0},
+          :location => {:type => :geo_point}
         }
       }
     end
@@ -260,7 +263,7 @@ See the [ElasticSearch Documentation](http://www.elasticsearch.com/docs/elastics
 
 Distributed indexing
 =======
-If there is a large amount of data to be indexed you will need distributed indexing. In this 
+You will need distributed indexing when there is a large amount of data to be indexed. In this 
 indexing mode the task of creating an index is divided between a pool of workers that can be 
 as large as  you need. Since ElasticSearch itself provides linear indexing scalability by adding 
 nodes to the cluster, this means that you should, in principle, be able to make your indexing
@@ -301,10 +304,10 @@ or if you want to re-create all your indexes
 
     rake elasticsearch:distributed_index
 
-Setting up a resque work queue also allows you to use the *:update => :distributed* option
+Setting up a resque work queue also allows you to use the *:update => :enqueue* option
 
     class Post < ActiveRecord::Base
-      elastic_index :update => :distributed
+      elastic_index :update => :enqueue
     end
 
 With this setting when a document is updated or deleted the task of updating the index is 
@@ -312,12 +315,33 @@ added to the work queue and will be performed asynchronously by a remote agent.
  
 Index versions
 =======
-Please not that indexes are versioned: when you create an index for the
+In *escargot* indexes are versioned: when you create an index for the
 model Post the actual index created in ElasticSearch will be named something like
-'posts_1287849616.57665'. This is useful since this makes the deployment of a new index
-version atomic: first the new version is created and only 
+'posts_1287849616.57665' with an alias 'posts' pointing to it. The second time 
+you run the "escargot:index" tasks a new index version will be created and the 
+alias will be updated only when the new index is ready. 
+
+This is useful because it makes the deployment of a new index version atomic. 
+
+When a document is saved and index updates are enabled, both the current index version
+and any version that's in progress will be updated. This ensures that when the new
+index is published it will include the change. 
+
+Contributing
+================
+Fork on GitHub, create a test & send a pull request. 
+
+Bugs
+================
+Use the [Issue Tracker](http://github.com/angelf/escargot/issues)
 
  
+Aknowledgements
+================
+* Large parts of the API plagiarize Thinking Sphinx.
+* This plugin depends on rubberband for communication with ElasticSearch.
+* Elastic Search rules!
+
 Future Plans
 ======
 
@@ -328,4 +352,4 @@ Future Plans
 * Adding other queue backends
 * Single-table inheritance support
 
-Copyright (c) 2010 vLex.com, released under the MIT license
+Copyright (c) 2010 Angel Faus & vLex.com, released under the MIT license
