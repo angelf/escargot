@@ -1,9 +1,15 @@
-require 'resque'
 
 module Escargot
 
   module DistributedIndexing
+
+    def DistributedIndexing.load_dependencies
+      require 'resque'
+    end
+
     def DistributedIndexing.create_index_for_model(model)
+      load_dependencies
+
       index_version = model.create_index_version
 
       model.find_in_batches(:select => "id") do |batch|
