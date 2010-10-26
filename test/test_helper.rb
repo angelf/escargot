@@ -13,6 +13,10 @@ require File.expand_path(File.join(ENV['RAILS_ROOT'], 'config/environment.rb'))
 class User < ActiveRecord::Base
 end
 
+class LegacyUser < ActiveRecord::Base
+  set_primary_key :legacy_id
+end
+
 def load_schema
   config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
   ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")

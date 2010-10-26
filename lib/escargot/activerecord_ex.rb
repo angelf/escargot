@@ -189,7 +189,7 @@ module Escargot
         options[:index] ||= self.class.index_name
         options[:type]  ||= self.class.table_name.underscore.singularize
         options[:id]    ||= self.id.to_s
-
+        
         $elastic_search_client.index(
           self.respond_to?(:indexed_json_document) ? self.indexed_json_document : self.to_json,
           options

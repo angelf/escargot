@@ -12,7 +12,7 @@ module Escargot
 
       index_version = model.create_index_version
 
-      model.find_in_batches(:select => "id") do |batch|
+      model.find_in_batches(:select => model.primary_key) do |batch|
         batch.each
         Escargot.queue_backend.enqueue(IndexDocuments, model.to_s, batch.map(&:id), index_version)
       end
@@ -23,8 +23,9 @@ module Escargot
     class IndexDocuments
       @queue = :indexing
         
-      def self.perform(model, ids, index_version)
-        model.constantize.find(:all, :conditions => {:id => ids}).each do |record|
+      def self.perform(model_name, ids, index_version)
+        model = model_name.constantize
+        model.find(:all, :conditions => {model.primary_key => ids}).each do |record|
           record.local_index_in_elastic_search(:index => index_version)
         end
       end
