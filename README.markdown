@@ -296,13 +296,16 @@ And use the resque:work rake task to start a worker:
 
      $ QUEUE=es_admin,es_nrt,es_batch rake resque:work
 
-Once you have set-up Resque and started a number of workers, you can easily create an index for you model:
+Once you have set-up Resque and started a number of workers, you can easily create an index for you model using the distributed model:
 
     rake "elasticsearch:distributed_index[Post]"
 
 or if you want to re-create all your indexes
 
     rake elasticsearch:distributed_index
+
+Be aware that due the distributed nature of indexing the new index may be deployed when some workers are still performing their last
+indexing job. 
 
 Setting up a resque work queue also allows you to use the *:update => :enqueue* option
 
@@ -338,18 +341,23 @@ Use the [Issue Tracker](http://github.com/angelf/escargot/issues)
  
 Aknowledgements
 ================
-* Large parts of the API plagiarize Thinking Sphinx.
+* Some parts of the API plagiarize the excellent Thinking Sphinx plugin, and more will do so in the future.
 * This plugin depends on rubberband for communication with ElasticSearch.
 * Elastic Search rules!
 
 Future Plans
 ======
 
+Search features:
+* Field conditions and term filters
+* Searching multiple models
+* Single-table inheritance support
+* (optionally) use the _source field from ES and avoid querying the database 
+
+Indexing features:
 * Distributing the task of listing document ids
 * Index partioning
-* Searching multiple models
 * Support for non-ActiveRecord models
 * Adding other queue backends
-* Single-table inheritance support
 
 Copyright (c) 2010 Angel Faus & vLex.com, released under the MIT license
