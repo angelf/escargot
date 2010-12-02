@@ -13,7 +13,7 @@ module Escargot
 
       # defines an elastic search index. Valid options:
       #
-      # :index_name (will default to the table_name)
+      # :index_name (will default class name using method "underscore")
       #
       # :updates, how to to update the contents of the index when a document is changed, valid options are:
       #
@@ -40,7 +40,7 @@ module Escargot
 
         options.symbolize_keys!
         send :include, InstanceMethods
-        @index_name = options[:index_name] || self.table_name.underscore
+        @index_name = options[:index_name] || self.name.underscore
         @update_index_policy = options.include?(:updates) ? options[:updates] : :immediate
         
         if @update_index_policy
@@ -144,7 +144,7 @@ module Escargot
       
       def delete_id_from_index(id, options = {})
         options[:index] ||= self.index_name
-        options[:type]  ||= self.table_name.underscore.singularize
+        options[:type]  ||= elastic_search_type
         $elastic_search_client.delete(id.to_s, options)
       end
       
@@ -154,7 +154,7 @@ module Escargot
       
       private
         def elastic_search_type
-          self.table_name.underscore.singularize
+          self.name.underscore.singularize
         end
 
     end
@@ -187,7 +187,7 @@ module Escargot
 
       def local_index_in_elastic_search(options = {})
         options[:index] ||= self.class.index_name
-        options[:type]  ||= self.class.table_name.underscore.singularize
+        options[:type]  ||= self.class.name.underscore.singularize
         options[:id]    ||= self.id.to_s
         
         $elastic_search_client.index(
