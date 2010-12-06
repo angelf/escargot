@@ -22,7 +22,7 @@ module Escargot
 
     class IndexDocuments
       @queue = :indexing
-        
+
       def self.perform(model_name, ids, index_version)
         model = model_name.constantize
         model.find(:all, :conditions => {model.primary_key => ids}).each do |record|
@@ -33,7 +33,7 @@ module Escargot
 
     class ReIndexDocuments
       @queue = :nrt
-      
+
       def self.perform(model_name, ids)
         model = model_name.constantize
         ids_found = []
@@ -41,7 +41,7 @@ module Escargot
           record.local_index_in_elastic_search
           ids_found << record.id
         end
-        
+
         (ids - ids_found).each do |id|
           model.delete_id_from_index(id)
         end
@@ -55,5 +55,5 @@ module Escargot
       end
     end
   end
-  
+
 end

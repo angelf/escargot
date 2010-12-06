@@ -1,4 +1,5 @@
 # Escargot
+require 'elasticsearch'
 require 'escargot/activerecord_ex'
 require 'escargot/elasticsearch_ex'
 require 'escargot/local_indexing'
@@ -11,11 +12,11 @@ module Escargot
     @indexed_models ||= []
     @indexed_models << model
   end
-      
+
   def self.indexed_models
     @indexed_models || []
   end
-  
+
   def self.queue_backend
     @queue ||= Escargot::QueueBackend::Rescue.new
   end
