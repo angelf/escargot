@@ -29,7 +29,7 @@ namespace :escargot do
   
   task :load_all_models do
     models = ActiveRecord::Base.send(:subclasses)
-    Dir["#{RAILS_ROOT}/app/models/*.rb", "#{RAILS_ROOT}/app/models/*/*.rb"].each do |file|
+    Dir["#{Rails.root}/app/models/*.rb", "#{Rails.root}/app/models/*/*.rb"].each do |file|
       model = File.basename(file, ".*").classify
       unless models.include?(model)
         require file
