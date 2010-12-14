@@ -137,7 +137,7 @@ module Escargot
         # and delete the index itself if it exists
         begin
           $elastic_search_client.delete_index(index_name)
-        rescue ElasticSearch::Transport::HTTP::RequestError
+        rescue ElasticSearch::RequestError
           # it's ok, this means that the index doesn't exist
         end
       end
