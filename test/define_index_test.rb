@@ -9,7 +9,7 @@ class ElasticIndexTest < Test::Unit::TestCase
   end
 
   def test_index_name
-    assert_equal User.index_name, 'users'
+    assert_equal User.index_name, 'elastic_index_test-user'
   end
   
   def test_search_method_present
