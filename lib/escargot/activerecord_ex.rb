@@ -187,7 +187,7 @@ module Escargot
 
       def local_index_in_elastic_search(options = {})
         options[:index] ||= self.class.index_name
-        options[:type]  ||= self.class.name.underscore.singularize
+        options[:type]  ||= self.class.name.underscore.singularize.gsub(/\//,'-')
         options[:id]    ||= self.id.to_s
         
         $elastic_search_client.index(
