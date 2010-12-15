@@ -27,8 +27,8 @@ class Mappings < Test::Unit::TestCase
     User.create(:name => 'Jamie la Máquina Voladora')
 
     User.refresh_index
-    
-    assert_equal User.search_count('name:pedro'), 0
-    assert_equal User.search_count('name:"Pedro el Viejo"'), 1
+
+    assert_equal User.search_count('name=pedro'), 0
+    assert_equal User.search_count('name="Pedro el Viejo"'), 1
   end
 end
