@@ -40,7 +40,7 @@ module Escargot
 
         options.symbolize_keys!
         send :include, InstanceMethods
-        @index_name = options[:index_name] || self.name.underscore
+        @index_name = options[:index_name] || self.name.underscore.gsub(/\//,'-')
         @update_index_policy = options.include?(:updates) ? options[:updates] : :immediate
         
         if @update_index_policy
@@ -154,7 +154,7 @@ module Escargot
       
       private
         def elastic_search_type
-          self.name.underscore.singularize
+          self.name.underscore.singularize.gsub(/\//,'-')
         end
 
     end
