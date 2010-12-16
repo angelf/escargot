@@ -13,7 +13,6 @@ module Escargot
       index_version = model.create_index_version
 
       model.find_in_batches(:select => model.primary_key) do |batch|
-        batch.each
         Escargot.queue_backend.enqueue(IndexDocuments, model.to_s, batch.map(&:id), index_version)
       end
 
