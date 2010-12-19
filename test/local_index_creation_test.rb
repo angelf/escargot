@@ -1,5 +1,4 @@
- require 'test_helper'
-require File.dirname(__FILE__) + '/test_helper.rb'
+require 'test_helper'
 
 # tests the behaviour of the index creation tasks that run locally (in the "simple" mode)
 # without real time support

@@ -1,7 +1,6 @@
 # tests the Near Real Time support 
 
 require 'test_helper'
-require File.dirname(__FILE__) + '/test_helper.rb'
 
 # tests the behaviour of the index creation tasks that run locally (in the "simple" mode)
 

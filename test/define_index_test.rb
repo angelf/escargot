@@ -1,7 +1,5 @@
 require 'test_helper'
 
-require File.dirname(__FILE__) + '/test_helper.rb'
-
 class ElasticIndexTest < Test::Unit::TestCase
   
   class User < ActiveRecord::Base

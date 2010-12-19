@@ -1,5 +1,5 @@
+# coding: utf-8
 require 'test_helper'
-require File.dirname(__FILE__) + '/test_helper.rb'
 
 class Mappings < Test::Unit::TestCase
   load_schema

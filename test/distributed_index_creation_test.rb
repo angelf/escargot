@@ -1,6 +1,5 @@
+# coding: utf-8
 require 'test_helper'
-
-require File.dirname(__FILE__) + '/test_helper.rb'
 
 # tests the behaviour of the index creation tasks that run in the distributed mode
 # without real time support

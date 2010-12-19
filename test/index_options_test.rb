@@ -1,5 +1,5 @@
+# coding: utf-8
 require 'test_helper'
-require File.dirname(__FILE__) + '/test_helper.rb'
 
 class CustomIndexOptions < Test::Unit::TestCase
   load_schema
@@ -18,7 +18,7 @@ class CustomIndexOptions < Test::Unit::TestCase
     User.delete_all
     User.delete_index
     
-    User.create(:name => 'Pedrín el Joven')
+    User.create(:name => "Pedrín el Joven")
     User.create(:name => 'Pedro el Viejo')
     User.create(:name => 'Roberto el Delgado')
     User.create(:name => 'Jamie la Máquina Voladora')

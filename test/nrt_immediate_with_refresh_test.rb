@@ -1,7 +1,6 @@
 # tests the Near Real Time support in the :updates => :immediate_with_refresh mode
 
 require 'test_helper'
-require File.dirname(__FILE__) + '/test_helper.rb'
 
 class NrtImmediateWithRefreshTest < Test::Unit::TestCase
   load_schema
