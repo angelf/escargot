@@ -48,8 +48,9 @@ end
 
 def resque_available
   begin
-    Resque
+    require 'resque'
     require 'resque_unit'
+    Resque.reset!
     return true
   rescue NameError, MissingSourceFile
     puts "Please install the 'resque' and 'resque_unit' gems to test the distributed mode."

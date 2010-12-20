@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'resque_unit'
 
 require File.dirname(__FILE__) + '/test_helper.rb'
 
@@ -9,6 +8,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 class DistributedIndexCreation < Test::Unit::TestCase
 
   load_schema
+  resque_available
   class User < ActiveRecord::Base
     elastic_index :updates => false
   end

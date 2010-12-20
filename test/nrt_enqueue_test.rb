@@ -1,19 +1,19 @@
 # tests the Near Real Time support in the :updates => true mode
 
 require 'test_helper'
-require 'resque_unit'
+
 
 require File.dirname(__FILE__) + '/test_helper.rb'
 
 class NrtEnqueue < Test::Unit::TestCase
   load_schema
+  resque_available
 
   class User < ActiveRecord::Base
     elastic_index :updates => :enqueue
   end
 
   def setup
-    Resque.reset!
     User.delete_all
     Escargot::LocalIndexing.create_index_for_model(User)
     
