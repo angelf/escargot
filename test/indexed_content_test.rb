@@ -17,12 +17,10 @@ class IndexedContentTest < Test::Unit::TestCase
     
     def foo
       "FOO!"
-    end    
+    end
   end
 
   def test_indexed_content
-    puts 'indexing'
-    
     User.delete_index
     User.delete_all
     
