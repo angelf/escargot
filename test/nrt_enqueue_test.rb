@@ -1,7 +1,5 @@
 # tests the Near Real Time support in the :updates => true mode
-
 require 'test_helper'
-
 
 require File.dirname(__FILE__) + '/test_helper.rb'
 
@@ -26,13 +24,10 @@ class NrtEnqueue < Test::Unit::TestCase
   
   def test_document_creation
     # the Resque tasks have not run yet, so there should be nothing in the index
-    User.refresh_index
-    assert_equal 0, User.search_count
-
-    # now run the Resque tasks and check that the index is good
+    # but now run the Resque tasks and check that the index is good
     Resque.run!
     User.refresh_index
-    
+
     assert_equal 5, User.search("*").total_entries
     results = User.search("wise")
     assert_equal results.total_entries, 1
@@ -43,8 +38,9 @@ class NrtEnqueue < Test::Unit::TestCase
     # now run the Resque tasks and check that the index is good
     Resque.run!
     User.refresh_index
+
     assert_equal 5, User.search("*").total_entries
-    
+
     # make a change in a document
     @tim.name = 'Tim the Reborn'
     @tim.save!
@@ -67,20 +63,18 @@ class NrtEnqueue < Test::Unit::TestCase
     Resque.run!
     User.refresh_index
 
-    #puts "TOTAL: " + User.search("*").inspect
-    #puts "TOTAL: " + User.search("*").total_entries.to_s
     assert_equal User.search("*").total_entries, 5
 
+    # Destroy the element
     @tim.destroy
     User.refresh_index
-
-    #puts "TOTAL POST DESTROY: " + User.search("*").total_entries.to_s
+    
+    # but still there until run Resque
     assert_equal User.search("*").total_entries, 5
 
     # but when we run the Resque tasks, all is well
     Resque.run!
     User.refresh_index
-
     assert_equal User.search("*").total_entries, 4
   end
 
