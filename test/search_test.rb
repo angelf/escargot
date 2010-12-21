@@ -38,14 +38,7 @@ class BasicSearchTest < Test::Unit::TestCase
   
   def test_facets
     assert_equal User.facets(:country_code)[:country_code]["ca"], 2
-
-    results = User.search("LONG or SKINNY")
-    puts results.inspect
-    
     facets = User.facets([:name, :country_code], :query => "LONG or SKINNY", :size => 100)
-    
-    puts facets.inspect
-    
     assert_equal facets[:name]["john"], 2
     assert_equal facets[:country_code]["it"], 1
   end

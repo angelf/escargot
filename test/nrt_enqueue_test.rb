@@ -67,15 +67,14 @@ class NrtEnqueue < Test::Unit::TestCase
     Resque.run!
     User.refresh_index
 
-    puts "TOTAL: " + User.search("*").inspect
-    puts "TOTAL: " + User.search("*").total_entries.to_s
-    
+    #puts "TOTAL: " + User.search("*").inspect
+    #puts "TOTAL: " + User.search("*").total_entries.to_s
     assert_equal User.search("*").total_entries, 5
-    
+
     @tim.destroy
     User.refresh_index
-    
-    puts "TOTAL POST DESTROY: " + User.search("*").total_entries.to_s
+
+    #puts "TOTAL POST DESTROY: " + User.search("*").total_entries.to_s
     assert_equal User.search("*").total_entries, 5
 
     # but when we run the Resque tasks, all is well
@@ -84,8 +83,8 @@ class NrtEnqueue < Test::Unit::TestCase
 
     assert_equal User.search("*").total_entries, 4
   end
-  
+
   def test_changes_are_updated_in_all_versions
-    
+
   end
 end

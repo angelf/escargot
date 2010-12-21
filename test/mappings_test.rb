@@ -15,7 +15,6 @@ class Mappings < Test::Unit::TestCase
   end
   
   def test_not_analyzed_property
-    puts 'indexing'
     
     User.delete_all
     User.delete_index
