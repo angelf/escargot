@@ -97,7 +97,7 @@ module Escargot
           options[:facets][field] = {:terms => {:field => field, :size => size}}
         end
 
-        hits = $elastic_search_client.search(options)
+        hits = $elastic_search_client.search(options, {:index => self.index_name, :type => elastic_search_type})
         out = {}
         
         fields_list.each do |field|
