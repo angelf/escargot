@@ -10,7 +10,7 @@ require 'escargot/queue_backend/resque'
 module Escargot
   def self.register_model(model)
     @indexed_models ||= []
-    @indexed_models << model
+    @indexed_models << model if !@indexed_models.include?(model)
   end
 
   def self.indexed_models
