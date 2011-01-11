@@ -34,7 +34,7 @@ namespace :escargot do
       unless models.include?(model)
         require file
       end
-      models << model 
+      models << model
     end
   end
   

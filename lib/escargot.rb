@@ -21,4 +21,30 @@ module Escargot
   def self.queue_backend
     @queue ||= Escargot::QueueBackend::Rescue.new
   end
+
+  # Functionality to perform searching in multiple models
+  def self.search(query, options = {})
+    if (options[:classes])
+      models = Array(options[:classes])
+    else
+      register_all_models
+      models = @indexed_models
+    end
+    $elastic_search_client.search(query, options.merge({:index => models.map(&:index_name).join(',')}))
+  end
+
+
+  private
+    def self.register_all_models
+      models = []
+      # Search all Models in the application Rails
+      Dir[File.join("#{RAILS_ROOT}/app/models".split(/\\/), "**", "*.rb")].each do |file|
+        model = file.gsub(/#{RAILS_ROOT}\/app\/models\/(.*?)\.rb/,'\1').classify.constantize
+        unless models.include?(model)
+          require file
+        end
+        models << model
+      end
+    end
+
 end
