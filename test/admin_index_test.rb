@@ -7,6 +7,8 @@ class AdminIndexTest < Test::Unit::TestCase
     elastic_index
   end
 
+  #TODO figure out how to have one setup and one teardown
+
   def test_prune_index
     @local_index = ''
     index = User.index_name
