@@ -127,13 +127,17 @@ module Escargot
         index_version
       end
       
-      # deletes all index versions for this model
+      # deletes all index versions for this model and the alias (if exist)
       def delete_index
-        # deletes any index version
+        # set current version to delete alias later
+        current_version = $elastic_search_client.current_index_version(index_name)
+
+        # deletes any index version and the alias
         $elastic_search_client.index_versions(index_name).each{|index_version|
+          $elastic_search_client.alias_index(:remove => {index_version => index_name}) if (index_version == current_version)
           $elastic_search_client.delete_index(index_version)
         }
-        
+
         # and delete the index itself if it exists
         begin
           $elastic_search_client.delete_index(index_name)
