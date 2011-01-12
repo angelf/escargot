@@ -336,7 +336,8 @@ You can use all the same syntax to search across all indexed models in your appl
 
     Escargot.search "dreams"
 
-Calling `Escargot.search` obtains object ElasticSearch::Api::Hit ordered by relevance
+Calling `Escargot.search` obtains object ElasticSearch::Api::Hit ordered by relevance.
+
 If you want to limit global searches to a few specific models, you can do so with the `:classes` option
 
     Escargot.search "dreams", :classes => [Post, Bird]
