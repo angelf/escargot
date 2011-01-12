@@ -330,6 +330,17 @@ When a document is saved and index updates are enabled, both the current index v
 and any version that's in progress will be updated. This ensures that when the new
 index is published it will include the change. 
 
+Searching multiple models
+================
+You can use all the same syntax to search across all indexed models in your application:
+
+    Escargot.search "dreams"
+
+Calling `Escargot.search` obtains object ElasticSearch::Api::Hit ordered by relevance
+If you want to limit global searches to a few specific models, you can do so with the `:classes` option
+
+    Escargot.search "dreams", :classes => [Post, Bird]
+
 Contributing
 ================
 Fork on GitHub, create a test & send a pull request. 
@@ -348,16 +359,16 @@ Aknowledgements
 Future Plans
 ======
 
-Search features:
-* Field conditions and term filters
-* Searching multiple models
-* Single-table inheritance support
-* (optionally) use the _source field from ES and avoid querying the database 
+* Search features:
+  * Field conditions and term filters
+  * Single-table inheritance support
+  * Improve Searching multiple models to return objects of models searching and not ElasticSearch::Api::Hit objects
+  * (optionally) use the _source field from ES and avoid querying the database 
 
-Indexing features:
-* Distributing the task of listing document ids
-* Index partioning
-* Support for non-ActiveRecord models
-* Adding other queue backends
+* Indexing features:
+  * Distributing the task of listing document ids
+  * Index partioning
+  * Support for non-ActiveRecord models
+  * Adding other queue backends
 
 Copyright (c) 2010 Angel Faus & vLex.com, released under the MIT license
