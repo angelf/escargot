@@ -9,9 +9,10 @@ require 'escargot/queue_backend/resque'
 
 module Escargot
   def self.register_model(model)
+    return unless model.table_exists?
     @indexed_models ||= []
     @indexed_models.delete(model) if @indexed_models.include?(model)
-    @indexed_models << model 
+    @indexed_models << model
   end
 
   def self.indexed_models
@@ -20,6 +21,10 @@ module Escargot
 
   def self.queue_backend
     @queue ||= Escargot::QueueBackend::Rescue.new
+  end
+  
+  def self.flush_all_indexed_models
+    @indexed_models = []
   end
 
   # Functionality to perform searching in multiple models

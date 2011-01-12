@@ -17,6 +17,7 @@ class LegacyUser < ActiveRecord::Base
   set_primary_key :legacy_id
 end
 
+
 def load_schema
   config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
   ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")
@@ -57,3 +58,7 @@ def resque_available
     exit
   end
 end
+
+def flush_indexes_models
+  Escargot.flush_all_indexed_models
+end  
