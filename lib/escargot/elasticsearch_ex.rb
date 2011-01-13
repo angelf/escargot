@@ -48,7 +48,7 @@ module Escargot
       end
     
   end
-  
+
   module HitExtensions
     def to_activerecord
       model_class = _type.gsub(/-/,'/').classify.constantize
@@ -59,4 +59,5 @@ module Escargot
       end
     end
   end
+
 end

@@ -51,35 +51,16 @@ module Escargot
         @mapping = options[:mapping] || false
       end
 
-      # search_hits returns a raw ElasticSearch::Api::Hits object for the search results
-      # see #search for the valid options
+      def search(query, options={})
+        Escargot.search(query, options.merge({:index => self.index_name, :type => elastic_search_type}), true)
+      end
+      
       def search_hits(query, options = {})
-        if query.kind_of?(Hash)
-          query = {:query => query}
-        end
-        $elastic_search_client.search(query, options.merge({:index => self.index_name, :type => elastic_search_type}))
-      end
+        Escargot.search_hits(query, options.merge({:index => self.index_name, :type => elastic_search_type}), true)
+      end  
 
-      # search returns a will_paginate collection of ActiveRecord objects for the search results
-      #
-      # see ElasticSearch::Api::Index#search for the full list of valid options
-      #
-      # note that the collection may include nils if ElasticSearch returns a result hit for a
-      # record that has been deleted on the database
-      def search(query, options = {})
-        hits = search_hits(query, options)
-        hits_ar = hits.map{|hit| hit.to_activerecord}
-        results = WillPaginate::Collection.new(hits.current_page, hits.per_page, hits.total_entries)
-        results.replace(hits_ar)
-        results
-      end
-
-      # counts the number of results for this query.
       def search_count(query = "*", options = {})
-        if query.kind_of?(Hash)
-          query = {:query => query}
-        end
-        $elastic_search_client.count(query, options.merge({:index => self.index_name, :type => elastic_search_type}))
+        Escargot.search_count(query, options.merge({:index => self.index_name, :type => elastic_search_type}), true)
       end
 
       def facets(fields_list, options = {})
