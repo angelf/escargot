@@ -336,11 +336,13 @@ You can use all the same syntax to search across all indexed models in your appl
 
     Escargot.search "dreams"
 
-Calling `Escargot.search` obtains object ElasticSearch::Api::Hit ordered by relevance.
+Calling `Escargot.search "dreams"` will return all objects that match, no matter what model they are from, ordered by relevance
 
 If you want to limit global searches to a few specific models, you can do so with the `:classes` option
 
     Escargot.search "dreams", :classes => [Post, Bird]
+
+Support similar behavior that `Basic Searching` and `Search counts`
 
 Contributing
 ================
@@ -363,7 +365,6 @@ Future Plans
 * Search features:
   * Field conditions and term filters
   * Single-table inheritance support
-  * Improve Searching multiple models to return objects of models searching and not ElasticSearch::Api::Hit objects
   * (optionally) use the _source field from ES and avoid querying the database 
 
 * Indexing features:
