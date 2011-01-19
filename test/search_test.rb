@@ -36,6 +36,12 @@ class BasicSearchTest < Test::Unit::TestCase
     assert_equal User.search_count("peter"), 2
   end
   
+  def test_search_count_with_query
+    results = User.search(:term => {:name => "John the Long"})
+    assert_equal results.total_entries, 1
+    assert_equal User.search_count(:term => {:name => "John the Long"}), 1
+  end
+  
   def test_facets
     assert_equal User.facets(:country_code)[:country_code]["ca"], 2
     facets = User.facets([:name, :country_code], :query => "LONG or SKINNY", :size => 100)

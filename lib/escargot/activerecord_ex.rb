@@ -76,9 +76,6 @@ module Escargot
 
       # counts the number of results for this query.
       def search_count(query = "*", options = {})
-        if query.kind_of?(Hash)
-          query = {:query => query}
-        end
         $elastic_search_client.count(query, options.merge({:index => self.index_name, :type => elastic_search_type}))
       end
 
