@@ -67,8 +67,10 @@ module Escargot
       # note that the collection may include nils if ElasticSearch returns a result hit for a
       # record that has been deleted on the database
       def search(query, options = {})
+        quick_search = options.delete(:quick_search)
+        options = options.merge(:ids_only => true) if quick_search
         hits = search_hits(query, options)
-        hits_ar = hits.map{|hit| hit.to_activerecord}
+        hits_ar = quick_search ? self.find(hits.compact.uniq) : hits.map{|hit| hit.to_activerecord}
         results = WillPaginate::Collection.new(hits.current_page, hits.per_page, hits.total_entries)
         results.replace(hits_ar)
         results

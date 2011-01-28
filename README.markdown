@@ -91,10 +91,19 @@ Basic Searching
 ----------------
 
 Calling `Model.search` obtains from ElasticSearch the ids of the results matching 
-your query and then queries your database to get the full ActiveRecord objects.
+your query and then queries your database to get the full ActiveRecord objects by
+mapping each result to it's corresponding ActiveRecord object.
 
     results = Post.search "dreams OR nightmares" 
     results.each {|r| puts r.title}
+
+The mapping by default queries the database once for each result, but you can pass
+the :quick\_search option in the options and that will do one database query.
+
+	results = Post.search "dreams OR nightmares", :quick_search => true
+
+
+
 
 The query is parsed using lucene's [QueryParser syntax](http://lucene.apache.org/java/2_4_0/queryparsersyntax.html).
 You can use boolean operators, restrict your search to a field, etc.
