@@ -72,10 +72,6 @@ module Escargot
       end
       options = options.merge({:index => models.map(&:index_name).join(',')})
     end
-    
-    if query.kind_of?(Hash)
-      query = {:query => query}
-    end
     $elastic_search_client.count(query, options)
   end
 
