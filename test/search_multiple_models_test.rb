@@ -21,12 +21,8 @@ class SearchMultipleModels < Test::Unit::TestCase
   end
 
   def setup
-    User.delete_all
-    User.delete_index
-    LegacyUser.delete_all
-    LegacyUser.delete_index
-    RenewUser.delete_all
-    RenewUser.delete_index
+
+    Escargot.flush_all_indexed_models
 
     User.new(:name => 'Cote').save!
     User.new(:name => 'Grillo').save!
@@ -59,6 +55,7 @@ class SearchMultipleModels < Test::Unit::TestCase
   
   
   def test_search_multiple_models
+
     # Search "Cote" in all Models
     assert_equal Escargot.search("Cote").total_entries, 5
 

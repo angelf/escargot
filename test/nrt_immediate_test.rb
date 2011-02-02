@@ -22,6 +22,11 @@ class NrtImmediate < Test::Unit::TestCase
     User.create(:name => 'Jamie the Flying Machine')    
   end
   
+  def teardown
+    User.delete_all
+    User.delete_index
+  end
+  
   def test_document_creation
     User.refresh_index
     assert_equal 5, User.search_count    

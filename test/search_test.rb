@@ -30,6 +30,11 @@ class BasicSearchTest < Test::Unit::TestCase
     Escargot::LocalIndexing.create_index_for_model(User)
   end
 
+  def teardown
+    User.delete_all
+    User.delete_index
+  end
+
   def test_search_count
     results = User.search("peter")
     assert_equal results.total_entries, 2

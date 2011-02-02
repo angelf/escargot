@@ -20,6 +20,11 @@ class NrtEnqueue < Test::Unit::TestCase
     User.create(:name => 'Jamie the Flying Machine')    
   end
   
+  def teardown
+    User.delete_all
+    User.delete_index
+  end
+  
   def test_document_creation
     # the Resque tasks have not run yet, so there should be nothing in the index
     # but now run the Resque tasks and check that the index is good

@@ -6,7 +6,7 @@ require 'test_helper'
 class LocalIndexCreation < Test::Unit::TestCase
   load_schema
   
-  class ::User < ActiveRecord::Base
+  class User < ActiveRecord::Base
     elastic_index :updates => false
   end
 
@@ -17,6 +17,7 @@ class LocalIndexCreation < Test::Unit::TestCase
     10.times do
       Escargot::LocalIndexing.create_index_for_model(User)
     end
+    sleep(1)
   end
   
   def test_indexing_rotation
@@ -40,6 +41,11 @@ class LocalIndexCreation < Test::Unit::TestCase
     
     results = User.search("*")
     assert_equal results.total_entries, 2
+  end
+  
+  def teardown
+    User.delete_all
+    User.delete_index
   end
   
 end

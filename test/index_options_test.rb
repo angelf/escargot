@@ -27,5 +27,8 @@ class CustomIndexOptions < Test::Unit::TestCase
     
     results = User.search("pedrin")
     assert_equal results.total_entries, 1
+    
+    User.delete_all
+    User.delete_index
   end
 end

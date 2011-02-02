@@ -31,4 +31,9 @@ class IndexedContentTest < Test::Unit::TestCase
     assert_equal User.search_count("Peter AND foo:FOO"), 2
   end
   
+  def teardown
+    User.delete_all
+    User.delete_index
+  end
+  
 end

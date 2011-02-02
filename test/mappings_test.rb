@@ -30,4 +30,9 @@ class Mappings < Test::Unit::TestCase
     assert_equal User.search_count('name=pedro'), 0
     assert_equal User.search_count('name="Pedro el Viejo"'), 1
   end
+  
+  def teardown
+    User.delete_all
+    User.delete_index
+  end
 end

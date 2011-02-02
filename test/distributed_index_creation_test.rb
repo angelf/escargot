@@ -87,4 +87,11 @@ class DistributedIndexCreation < Test::Unit::TestCase
     # check that there are no traces of the older index
     assert_equal User.search_count, 2
   end
+
+  def teardown
+    User.delete_all
+    User.delete_index
+    LegacyUser.delete_all
+    LegacyUser.delete_index
+  end
 end
