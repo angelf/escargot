@@ -1,2 +1,9 @@
 *.log
 *.db
+
+# Generate gem file
+*.gem
+
+# vim swap files
+*.swp
+*.swo
