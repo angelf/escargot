@@ -17,7 +17,11 @@ class NrtEnqueue < Test::Unit::TestCase
     User.create(:name => 'Peter the Young')
     User.create(:name => 'Peter the Old')
     User.create(:name => 'Bob the Skinny')
-    User.create(:name => 'Jamie the Flying Machine')    
+    User.create(:name => 'Jamie the Flying Machine')
+
+    # the Resque tasks have not run yet, so there should be nothing in the index
+    # but now run the Resque tasks and check that the index is good for each test
+    Resque.run!
   end
   
   def teardown
@@ -26,9 +30,6 @@ class NrtEnqueue < Test::Unit::TestCase
   end
   
   def test_document_creation
-    # the Resque tasks have not run yet, so there should be nothing in the index
-    # but now run the Resque tasks and check that the index is good
-    Resque.run!
     User.refresh_index
 
     assert_equal 5, User.search("*").total_entries
@@ -38,10 +39,8 @@ class NrtEnqueue < Test::Unit::TestCase
   end
   
   def test_document_updates
-    # now run the Resque tasks and check that the index is good
-    Resque.run!
     User.refresh_index
-
+    
     assert_equal 5, User.search("*").total_entries
 
     # make a change in a document
@@ -62,8 +61,6 @@ class NrtEnqueue < Test::Unit::TestCase
   end
   
   def test_document_deletes
-    # now run the Resque tasks and check that the index is good
-    Resque.run!
     User.refresh_index
 
     assert_equal User.search("*").total_entries, 5
