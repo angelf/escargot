@@ -13,7 +13,7 @@ and (if you want to use the **optional** distributed indexing mode) Redis.
 Usage
 =======
 
-First, [download and start ElasticSearch](http://www.elasticsearch.com/docs/elasticsearch/setup/installation/) (it's really simple). With the default setup of
+First, [download](http://www.elasticsearch.org/download/) and [start ElasticSearch](http://www.elasticsearch.org/guide/reference/setup/installation.html) (it's really simple). With the default setup of
 of ElasticSearch (listening to localhost and port 9200) no configuration of the plugin is 
 necessary. 
 
@@ -132,7 +132,7 @@ Pagination
   
 Query DSL
 ----------------
-Instead of a string, you can pass a query in ElasticSearch's [Query DSL](http://www.elasticsearch.com/docs/elasticsearch/rest_api/query_dsl/)
+Instead of a string, you can pass a query in ElasticSearch's [Query DSL](http://www.elasticsearch.org/guide/reference/query-dsl/)
 giving you access to the full range of search features. 
 
     Bird.search(:match_all => true}  
@@ -234,7 +234,7 @@ If you want the search to be insensitive to accents and other diacritics:
     end
 
 The full list of available options for index creation is documented at
-[http://www.elasticsearch.com/docs/elasticsearch/index_modules/](http://www.elasticsearch.com/docs/elasticsearch/index_modules/)
+[http://www.elasticsearch.org/guide/reference/index-modules/](http://www.elasticsearch.org/guide/reference/index-modules/)
 
 Mapping options
 ----------------
@@ -259,7 +259,7 @@ Some examples:
     end
 
 
-See the [ElasticSearch Documentation](http://www.elasticsearch.com/docs/elasticsearch/mapping/) for mappings.
+See the [ElasticSearch Documentation](http://www.elasticsearch.org/guide/reference/mapping/) for mappings.
 
 Distributed indexing
 =======
