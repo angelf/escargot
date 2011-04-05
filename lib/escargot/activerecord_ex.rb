@@ -68,7 +68,7 @@ module Escargot
         fields_list = [fields_list] unless fields_list.kind_of?(Array)
         
         if !options[:query]
-          options[:query] = {:match_all => true}
+          options[:query] = {:match_all => { } }
         elsif options[:query].kind_of?(String)
           options[:query] = {:query_string => {:query => options[:query]}}
         end
