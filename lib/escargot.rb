@@ -42,7 +42,8 @@ module Escargot
     end
     
     if query.kind_of?(Hash)
-      query = {:query => query}
+      query_dsl = query.delete(:query_dsl)
+      query = {:query => query} if (query_dsl.nil? || query_dsl)
     end
     $elastic_search_client.search(query, options)
   end
