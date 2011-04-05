@@ -46,6 +46,17 @@ class BasicSearchTest < Test::Unit::TestCase
     assert_equal results.total_entries, 2
     assert_equal User.search_count(:term => {:name => "john"}), 2
   end
+  
+  def test_search_without_query_dsl
+    # By default in Escargot any query Hash is a Query DSL, so anything you put in the first param is wrapper with
+    # this "query = {:query => {query}}", but sometimes if you need puts some params OUT Query DSL you can do this
+    # putting in the query Hash the option ":query_dsl => false", of course remember to put the term ":query => {your query}"
+    # to work correctly
+
+    results = User.search({:track_scores =>true, :sort =>[{ :country_code => {:reverse => true }}] , :query => {:term => {:name => "john"}}, :query_dsl => false})
+    assert_equal results.first.name, 'John the Skinny Too'
+  end
+  
 
   def test_facets
     assert_equal User.facets(:country_code)[:country_code]["ca"], 2
