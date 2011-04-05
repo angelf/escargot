@@ -139,7 +139,7 @@ giving you access to the full range of search features.
       
     Bird.search(:fuzzy => {:name => 'oriale'})
 
-    Bird.search(:custom_score => {:query => {:match_all => true}, :script => "random()"})
+    Bird.search(:custom_score => {:query => {:match_all => { } }, :script => "random()"})
     
     Bird.search(:dis_max => {
       :tie_breaker => 0.7,
