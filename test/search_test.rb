@@ -53,7 +53,7 @@ class BasicSearchTest < Test::Unit::TestCase
     # putting in the query Hash the option ":query_dsl => false", of course remember to put the term ":query => {your query}"
     # to work correctly
 
-    results = User.search({:track_scores =>true, :sort =>[{ :country_code => {:reverse => true }}] , :query => {:term => {:name => "john"}}, :query_dsl => false})
+    results = User.search(:sort =>[{ :country_code => {:reverse => true }}] , :query => {:term => {:name => "john"}}, :query_dsl => false,:track_scores =>true)
     assert_equal results.first.name, 'John the Skinny Too'
   end
   

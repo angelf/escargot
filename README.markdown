@@ -135,7 +135,7 @@ Query DSL
 Instead of a string, you can pass a query in ElasticSearch's [Query DSL](http://www.elasticsearch.org/guide/reference/query-dsl/)
 giving you access to the full range of search features. 
 
-    Bird.search(:match_all => true}  
+    Bird.search(:match_all => { })  
       
     Bird.search(:fuzzy => {:name => 'oriale'})
 
@@ -162,7 +162,27 @@ giving you access to the full range of search features.
         }
       }
     )
-  
+
+ 
+Query DSL with API Search
+----------------  
+Any query Hash in Escargot a is a Query DSL by default, so anything you put in the first param is wrapper with
+the term "query", but sometimes you need puts some params out Query DSL, using options of [API Search](http://www.elasticsearch.org/guide/reference/api/search/), you can do this
+using the option *:query_dsl => false* in the query Hash, of course remember to put the term *:query => {your query}* to work correctly
+    
+    User.search (
+        :track_scores =>true, 
+        :sort =>[ {
+                    :name => {:reverse => true }
+                  }
+                ],
+        :query => {
+                    :term => {:name => "john"}
+                  }, 
+        :query_dsl => false
+    )
+
+
 Facets
 ----------------
   
