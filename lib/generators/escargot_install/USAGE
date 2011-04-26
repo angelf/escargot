@@ -6,4 +6,4 @@ Example:
 	rails 3.0.x: rails generate escargot:install
 
     This will create:
-        config/elasticsearch.yml
+        config/escargot.yml

@@ -3,7 +3,7 @@
 
   def manifest
     record do |m|
-      m.template 'config/elasticsearch.yml', 'config/elasticsearch.yml'
+      m.template 'config/escargot.yml', 'config/escargot.yml'
     end
   end  
   
