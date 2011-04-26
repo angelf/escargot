@@ -7,3 +7,6 @@
 # vim swap files
 *.swp
 *.swo
+
+# bak files
+*.bak
