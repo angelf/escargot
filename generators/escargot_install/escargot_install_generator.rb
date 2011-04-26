@@ -1,6 +1,5 @@
 # rails 2 generator
-module Escargot 
- class InstallGenerator < Rails::Generators::NamedBase
+ class EscargotInstallGenerator < Rails::Generator::Base
 
   def manifest
     record do |m|
@@ -9,5 +8,4 @@ module Escargot
   end  
   
  end 
-end
 
