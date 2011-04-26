@@ -2,7 +2,8 @@ Description:
     Explain the generator
 
 Example:
-    rails generate escargot:install
+    rails 2.3.x: ruby script/generate escargot_install
+	rails 3.0.x: rails generate escargot:install
 
     This will create:
-        what/will/it/create
+        config/elasticsearch.yml
