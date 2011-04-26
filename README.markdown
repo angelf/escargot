@@ -25,7 +25,7 @@ config/escargot.yml and add the following lines:
 
 	port: <elasticsearch-port-number>
  
-If you are lasy to create config/escargot.yml by hand, there is a solution for you named escargot install generator.
+If you are lazy to create config/escargot.yml by hand, there is a solution for you named escargot install generator.
 To invoque the generator, just trigger one of the following commands:
 
 - rails 2.3.x:

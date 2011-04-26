@@ -2,7 +2,7 @@
 *.db
 
 # Generate gem file
-*.gem
+#*.gem
 
 # vim swap files
 *.swp
