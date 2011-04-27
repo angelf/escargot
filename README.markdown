@@ -7,8 +7,35 @@ distributed indexing and models that integrate data from many databases.
 
 Requirements
 ============
-Currently only rails 2.3 is supported. You will need ElasticSearch, the 'rubberband' gem
+Escargot supports both rails 2.3.x and rails 3.0.x. You will need ElasticSearch, the 'rubberband' gem
 and (if you want to use the **optional** distributed indexing mode) Redis. 
+
+Configuration
+=============
+By default, Escargot will try to connect to elasticsearch at 
+
+	host: localhost
+
+	port: 9200
+
+To explicitly specify a server host and a port of elasticsearch to connect to, one need to create 
+config/escargot.yml and add the following lines:
+
+	host: <elasticsearch-server>
+
+	port: <elasticsearch-port-number>
+ 
+If you are lazy to create config/escargot.yml by hand, there is a solution for you named escargot install generator.
+To invoque the generator, just trigger one of the following commands:
+
+- rails 2.3.x:
+     
+    ruby script/generate escargot_install
+  
+- rails 3.0.x:
+
+    rails generate escargot:install
+  
 
 Usage
 =======

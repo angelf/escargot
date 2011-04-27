@@ -1,4 +1,3 @@
-# Escargot
 require 'elasticsearch'
 require 'escargot/activerecord_ex'
 require 'escargot/elasticsearch_ex'
@@ -6,7 +5,6 @@ require 'escargot/local_indexing'
 require 'escargot/distributed_indexing'
 require 'escargot/queue_backend/base'
 require 'escargot/queue_backend/resque'
-
 
 module Escargot
   def self.register_model(model)
@@ -80,8 +78,8 @@ module Escargot
     def self.register_all_models
       models = []
       # Search all Models in the application Rails
-      Dir[File.join("#{RAILS_ROOT}/app/models".split(/\\/), "**", "*.rb")].each do |file|
-        model = file.gsub(/#{RAILS_ROOT}\/app\/models\/(.*?)\.rb/,'\1').classify.constantize
+      Dir[File.join(Rails.root.to_s + "/app/models".split(/\\/), "**", "*.rb")].each do |file|
+        model = file.gsub(/Rails.root.to_s\/app\/models\/(.*?)\.rb/,'\1').classify.constantize
         unless models.include?(model)
           require file
         end
@@ -91,3 +89,12 @@ module Escargot
 
 
 end
+
+
+#-------------------------------------------------------------------------------
+require 'escargot' 
+require 'escargot/rails/init_commun'
+
+# preserve rails 2.x compatibility
+(Rails::VERSION::MAJOR == 3) ? (require 'escargot/rails/railtie') : (require 'escargot/rails/init')
+#-------------------------------------------------------------------------------

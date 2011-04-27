@@ -2,8 +2,11 @@
 *.db
 
 # Generate gem file
-*.gem
+#*.gem
 
 # vim swap files
 *.swp
 *.swo
+
+# bak files
+*.bak
