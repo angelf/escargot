@@ -56,7 +56,14 @@ class BasicSearchTest < Test::Unit::TestCase
     results = User.search({:sort =>[{ :country_code => {:reverse => true }}] , :query => {:term => {:name => "john"}}, :track_scores =>true}, :query_dsl => false)
     assert_equal results.first.name, 'John the Skinny Too'
   end
-  
+
+  def test_search_without_query_dsl_with_pagination
+    results = User.search({:sort =>[{:country_code => {:reverse => true}}], :query => {:match_all => true}}, :query_dsl => false, :per_page => 5, :page => 1)
+    assert_equal results.count, 5
+
+    results = User.search({:sort =>[{:country_code => {:reverse => true}}], :query => {:match_all => true}}, :query_dsl => false, :per_page => 5, :page => 2)
+    assert_equal results.count, 1
+  end
 
   def test_facets
     assert_equal User.facets(:country_code)[:country_code]["ca"], 2
