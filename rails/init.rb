@@ -2,7 +2,7 @@ require 'escargot'
 
 ActiveRecord::Base.class_eval do
   include Escargot::ActiveRecordExtensions
-end
+end if defined?(ActiveRecord::Base)
 
 ElasticSearch::Api::Hit.class_eval do
   include Escargot::HitExtensions
