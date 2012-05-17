@@ -340,7 +340,7 @@ Index versions
 =======
 In *escargot* indexes are versioned: when you create an index for the
 model Post the actual index created in ElasticSearch will be named something like
-'posts_1287849616.57665' with an alias 'posts' pointing to it. The second time 
+'posts\_production\_1287849616.57665' with an alias 'posts\_production' pointing to it. The second time 
 you run the "escargot:index" tasks a new index version will be created and the 
 alias will be updated only when the new index is ready. 
 

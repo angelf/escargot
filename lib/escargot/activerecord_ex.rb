@@ -40,7 +40,7 @@ module Escargot
 
         options.symbolize_keys!
         send :include, InstanceMethods
-        @index_name = options[:index_name] || self.name.underscore.gsub(/\//,'-')
+        @index_name = [options[:index_name] || self.table_name.underscore, Rails.env].join("_")
         @update_index_policy = options.include?(:updates) ? options[:updates] : :immediate
         
         if @update_index_policy
