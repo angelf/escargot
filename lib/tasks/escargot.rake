@@ -20,6 +20,18 @@ namespace :escargot do
     end
   end
   
+  desc "indexes the models LIVE LIKE BOSS"
+  task :pre_alias_distributed_index, :models, :needs => [:environment, :load_all_models] do |t, args|
+    each_indexed_model(args) do |model|
+      puts "Indexing #{model}"
+      index_version = model.create_index_version
+      $elastic_search_client.deploy_index_version(index, index_version)
+      Escargot::PreAliasDistributedIndexing.create_index_for_model(model)
+    end
+  end
+  
+  
+  
   desc "prunes old index versions for this models"
   task :prune_versions, :models, :needs => [:environment, :load_all_models] do |t, args|
     each_indexed_model(args) do |model|
